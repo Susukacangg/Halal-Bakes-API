@@ -1,0 +1,78 @@
+openapi: 3.0.3
+info:
+  title: Halal Bakes API
+  description: API endpoint for Android app
+  version: 1.0.0
+basePath: "/v3/api-docs"
+
+paths:
+  /get-barcode-info:
+    get:
+      tags:
+        - Hbv1
+      summary: Get info of food based on barcode
+      operationId: getBarcodeInfo
+      parameters:
+        - name: barcode
+          in: query
+          description: Barcode number passed in through scan
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Model of the product information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInfoModel'
+
+components:
+  schemas:
+    ProductInfoModel:
+      type: object
+      properties:
+        code:
+          type: string
+        product:
+          type:
+            $ref: '#/components/schemas/FoodInfoModel'
+        status:
+          type: integer
+        status_verbose:
+          type: string
+    FoodInfoModel:
+      type: object
+      properties:
+        additives_n:
+          type: integer
+        allergens:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientsModel'
+        product_name:
+          type: string
+    IngredientsModel:
+      type: object
+      properties:
+        id:
+          type: string
+        percent:
+          type: integer
+          format: int64
+        percent_estimate:
+          type: integer
+          format: int64
+        percent_max:
+          type: integer
+          format: int64
+        percent_min:
+          type: integer
+          format: int64
+        text:
+          type: string
+        vegan:
+          type: string
+        vegetarian:
+          type: string
