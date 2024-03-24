@@ -6,12 +6,31 @@ info:
 basePath: "/v3/api-docs"
 
 paths:
-  /get-barcode-info:
+  /get-prod-info:
+    get:
+      tags:
+        - Hbv1
+      summary: Main API endpoint
+      operationId: getProdInfo
+      parameters:
+        - name: barcode
+          in: query
+          description: Barcode number passed through scan
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Simplified model of information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProdInfoModel'
+  /get-open-food-facts-model:
     get:
       tags:
         - Hbv1
       summary: Get info of food based on barcode
-      operationId: getBarcodeInfo
+      operationId: getOpenFoodFactsModel
       parameters:
         - name: barcode
           in: query
@@ -24,20 +43,36 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductInfoModel'
+                $ref: '#/components/schemas/OpenFoodFactsModel'
+  /get-base-info:
+    get:
+      tags:
+        - Hbv1
+      summary: get info of the ingredient through Halal Nutrition API
+      operationId: getBaseInfo
+      parameters:
+        - name: qStr
+          in: query
+          description: the ingredient in string form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Model of the ingredient information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HalalNutriBaseModel'
 
 components:
   schemas:
-    ProductInfoModel:
+    OpenFoodFactsModel:
       type: object
       properties:
         code:
           type: string
         product:
-          type:
-            $ref: '#/components/schemas/FoodInfoModel'
-        status:
-          type: integer
+          $ref: '#/components/schemas/FoodInfoModel'
         status_verbose:
           type: string
     FoodInfoModel:
@@ -50,29 +85,77 @@ components:
         ingredients:
           type: array
           items:
-            $ref: '#/components/schemas/IngredientsModel'
+            $ref: '#/components/schemas/IngredientModel'
         product_name:
           type: string
-    IngredientsModel:
+    IngredientModel:
       type: object
       properties:
         id:
           type: string
-        percent:
-          type: integer
-          format: int64
-        percent_estimate:
-          type: integer
-          format: int64
-        percent_max:
-          type: integer
-          format: int64
-        percent_min:
-          type: integer
-          format: int64
         text:
           type: string
         vegan:
           type: string
         vegetarian:
+          type: string
+    HalalNutriBaseModel:
+      type: object
+      properties:
+        message:
+          type: string
+        entityData:
+          type: array
+          items:
+            $ref: '#/components/schemas/HalalNutriModel'
+    HalalNutriModel:
+      type: object
+      properties:
+        label:
+          type: string
+        atribute:
+          $ref: '#/components/schemas/HalalNutriAttrModel'
+    HalalNutriAttrModel:
+      type: object
+      properties:
+        certificate:
+          type: string
+        hasManufacturer:
+          type: string
+        type:
+          type: string
+    ProdInfoModel:
+      type: object
+      properties:
+        name:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProdInfoIngredientModel'
+        additives:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProdInfoAdditiveModel'
+        isHalal:
+          type: boolean
+        companyName:
+          type: string
+        manuLocation:
+          type: string
+    ProdInfoIngredientModel:
+      type: object
+      properties:
+        name:
+          type: string
+        halalStatus:
+          type: string
+    ProdInfoAdditiveModel:
+      type: object
+      properties:
+        name:
+          type: string
+        halalStatus:
+          type: string
+        description:
           type: string
