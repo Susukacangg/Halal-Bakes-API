@@ -8,15 +8,15 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "ingredient")
-public class Ingredient {
+@Table(name = "additive")
+public class AdditiveEntity {
     @Id
-    @Column(name = "ingredient_id")
-    private Integer ingredientId;
-
-    @Column(name = "ingredient_name")
-    private String ingredientName;
+    @Column(name = "ecode")
+    private String ecodeId;
 
     @Column(name = "halal_status")
     private String halalStatus;
+
+    @Column(name = "description")
+    private String description;
 }

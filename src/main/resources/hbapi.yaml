@@ -25,6 +25,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProdInfoModel'
+  /get-all-questions:
+    get:
+      tags:
+        - Hbv1
+      summary: Get all the forum questions
+      operationId: getAllQuestions
+      responses:
+        '200':
+          description: List of all the forum questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuestionInfoModel'
   /get-open-food-facts-model:
     get:
       tags:
@@ -158,4 +173,24 @@ components:
         halalStatus:
           type: string
         description:
+          type: string
+    QuestionInfoModel:
+      type: object
+      properties:
+        question:
+          type: string
+        numViews:
+          type: int
+        numLikes:
+          type: int
+        answerList:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerInfoModel'
+    AnswerInfoModel:
+      type: object
+      properties:
+        answer:
+          type: string
+        answererName:
           type: string

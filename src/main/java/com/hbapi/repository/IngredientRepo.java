@@ -1,6 +1,6 @@
 package com.hbapi.repository;
 
-import com.hbapi.entity.Ingredient;
+import com.hbapi.entity.IngredientEntity;
 import feign.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,12 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface IngredientRepo extends JpaRepository<Ingredient, Integer> {
+public interface IngredientRepo extends JpaRepository<IngredientEntity, Integer> {
 
     @Query(nativeQuery = true, value = """
             SELECT *
-            FROM ingredient
+            FROM ingredientEntity
             WHERE ingredient_id = :ingredientId
             """)
-    Optional<Ingredient> findIngredientByIngredientId(@Param("ingredientId") Integer ingredientId);
+    Optional<IngredientEntity> findIngredientByIngredientId(@Param("ingredientId") Integer ingredientId);
 }

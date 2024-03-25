@@ -28,49 +28,51 @@ public class HbApiServiceImpl implements HbApiService{
     private final IngredientRepo ingredientRepo;
     private final ProductInfoIngredientRepo productInfoIngredientRepo;
     private final ProductInfoAdditiveRepo productInfoAdditiveRepo;
+    private final QuestionRepo questionRepo;
+    private final AnswerRepo answerRepo;
 
     @Override
     public ProdInfoModel getProdInfo(String barcode) {
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByBarcode(barcode);
+        Optional<ProductInfoEntity> productInfoOptional = productInfoRepo.findProductInfoByBarcode(barcode);
 
         if(productInfoOptional.isPresent()) {
             ProdInfoModel prodInfoModel = new ProdInfoModel();
-            ProductInfo productInfo = productInfoOptional.get();
+            ProductInfoEntity productInfoEntity = productInfoOptional.get();
 
-            prodInfoModel.setName(productInfo.getName());
-            prodInfoModel.setCompanyName(productInfo.getCompanyName());
-            prodInfoModel.setManuLocation(productInfo.getManuLoc());
+            prodInfoModel.setName(productInfoEntity.getName());
+            prodInfoModel.setCompanyName(productInfoEntity.getCompanyName());
+            prodInfoModel.setManuLocation(productInfoEntity.getManuLoc());
             boolean isProdHalal = true;
 
             // adding ingredients into a list
             List<ProdInfoIngredientModel> ingredientsList = new ArrayList<>();
-            List<ProductInfoIngredient> productInfoIngredients = productInfoIngredientRepo.findProductInfoIngredientByBarcode(barcode);
-            for(ProductInfoIngredient infoIngredient: productInfoIngredients) {
-                Optional<Ingredient> ingredientOptional = ingredientRepo.findIngredientByIngredientId(infoIngredient.getIngredientId());
-                Ingredient ingredient = ingredientOptional.get();
+            List<ProductInfoIngredientEntity> productInfoIngredientEntities = productInfoIngredientRepo.findProductInfoIngredientByBarcode(barcode);
+            for(ProductInfoIngredientEntity infoIngredient: productInfoIngredientEntities) {
+                Optional<IngredientEntity> ingredientOptional = ingredientRepo.findIngredientByIngredientId(infoIngredient.getIngredientId());
+                IngredientEntity ingredientEntity = ingredientOptional.get();
 
                 ProdInfoIngredientModel ingredientItem = new ProdInfoIngredientModel();
-                ingredientItem.setName(ingredient.getIngredientName());
-                if(!ingredient.getHalalStatus().equals("HALAL"))
+                ingredientItem.setName(ingredientEntity.getIngredientName());
+                if(!ingredientEntity.getHalalStatus().equals("HALAL"))
                     isProdHalal = false;
-                ingredientItem.setHalalStatus(ingredient.getHalalStatus());
+                ingredientItem.setHalalStatus(ingredientEntity.getHalalStatus());
 
                 ingredientsList.add(ingredientItem);
             }
 
             // adding additives into a list
             List<ProdInfoAdditiveModel> additivesList = new ArrayList<>();
-            List<ProductInfoAdditive> productInfoAdditives = productInfoAdditiveRepo.findProductInfoAdditiveByBarcode(barcode);
-            for(ProductInfoAdditive infoAdditive: productInfoAdditives) {
-                Optional<Additive> additiveOptional = additiveRepo.findEcodeByEcodeId(infoAdditive.getEcode());
-                Additive additive = additiveOptional.get();
+            List<ProductInfoAdditiveEntity> productInfoAdditiveEntities = productInfoAdditiveRepo.findProductInfoAdditiveByBarcode(barcode);
+            for(ProductInfoAdditiveEntity infoAdditive: productInfoAdditiveEntities) {
+                Optional<AdditiveEntity> additiveOptional = additiveRepo.findEcodeByEcodeId(infoAdditive.getEcode());
+                AdditiveEntity additiveEntity = additiveOptional.get();
 
                 ProdInfoAdditiveModel additiveItem = new ProdInfoAdditiveModel();
-                additiveItem.setName(additive.getEcodeId());
-                additiveItem.setHalalStatus(additive.getHalalStatus());
-                if(!additive.getHalalStatus().equals("HALAL"))
+                additiveItem.setName(additiveEntity.getEcodeId());
+                additiveItem.setHalalStatus(additiveEntity.getHalalStatus());
+                if(!additiveEntity.getHalalStatus().equals("HALAL"))
                     isProdHalal = false;
-                additiveItem.setDescription(additive.getDescription());
+                additiveItem.setDescription(additiveEntity.getDescription());
 
                 additivesList.add(additiveItem);
             }
@@ -91,6 +93,36 @@ public class HbApiServiceImpl implements HbApiService{
         }
 
         return null;
+    }
+
+    @Override
+    public List<QuestionInfoModel> getAllQuestions() {
+        List<QuestionInfoModel> allQuestions = new ArrayList<>();
+
+        List<QuestionEntity> allQuestionEntities = questionRepo.findAllQuestion();
+
+        for(QuestionEntity questionEntity: allQuestionEntities) {
+            QuestionInfoModel question = new QuestionInfoModel();
+            question.setQuestion(questionEntity.getQuestion());
+            question.setNumLikes(questionEntity.getNumLikes());
+            question.setNumViews(questionEntity.getNumViews());
+
+            List<AnswerInfoModel> allAnswersCurrQuestion = new ArrayList<>();
+            List<AnswerEntity> allAnswerEntitiesCurrQuestion = answerRepo.findAllAnswerByQuestionIdFk(questionEntity.getQuestionId());
+            for(AnswerEntity answerEntity: allAnswerEntitiesCurrQuestion) {
+                AnswerInfoModel answer = new AnswerInfoModel();
+                answer.setAnswer(answerEntity.getAnswer());
+                answer.setAnswererName(answerEntity.getAnswererName());
+
+                allAnswersCurrQuestion.add(answer);
+            }
+
+            question.setAnswerList(allAnswersCurrQuestion);
+
+            allQuestions.add(question);
+        }
+
+        return allQuestions;
     }
 
     @Override
@@ -123,17 +155,17 @@ public class HbApiServiceImpl implements HbApiService{
     }
 
     @Override
-    public Additive getEcode(String ecode) {
+    public AdditiveEntity getEcode(String ecode) {
         ecode = ecode.toLowerCase();
         if(!ecode.startsWith("e"))
             ecode = "E" + ecode.replaceAll("[^0-9]", "");
 
         log.info(ecode);
-        Optional<Additive> additiveOptional = additiveRepo.findEcodeByEcodeId(ecode);
-        Additive additive = null;
+        Optional<AdditiveEntity> additiveOptional = additiveRepo.findEcodeByEcodeId(ecode);
+        AdditiveEntity additiveEntity = null;
         if(additiveOptional.isPresent())
-            additive = additiveOptional.get();
+            additiveEntity = additiveOptional.get();
 
-        return additive;
+        return additiveEntity;
     }
 }

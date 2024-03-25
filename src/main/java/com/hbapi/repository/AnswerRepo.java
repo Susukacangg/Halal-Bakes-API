@@ -1,20 +1,20 @@
 package com.hbapi.repository;
 
-import com.hbapi.entity.AdditiveEntity;
+import com.hbapi.entity.AnswerEntity;
 import feign.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface AdditiveRepo extends JpaRepository<AdditiveEntity, String> {
+public interface AnswerRepo extends JpaRepository<AnswerEntity, Integer> {
 
     @Query(nativeQuery = true, value = """
             SELECT *
-            FROM additiveEntity
-            WHERE ecode = :ecode
+            FROM answer
+            WHERE question_id_fk = :qId
             """)
-    Optional<AdditiveEntity> findEcodeByEcodeId(@Param("ecode") String ecode);
+    List<AnswerEntity> findAllAnswerByQuestionIdFk(@Param("qId") Integer qId);
 }

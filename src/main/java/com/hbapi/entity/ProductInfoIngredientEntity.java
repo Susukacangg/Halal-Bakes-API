@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "product_info_additive")
-public class ProductInfoAdditive {
+@Table(name = "product_info_ingredient")
+public class ProductInfoIngredientEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue
@@ -15,6 +15,6 @@ public class ProductInfoAdditive {
     @Column(name = "barcode_fk")
     private String barcode;
 
-    @Column(name = "ecode_fk")
-    private String ecode;
+    @Column(name = "ingredient_id_fk")
+    private Integer ingredientId;
 }

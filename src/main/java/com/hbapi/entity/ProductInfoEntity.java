@@ -10,7 +10,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "product_info")
-public class ProductInfo {
+public class ProductInfoEntity {
     @Id
     @Column(name = "barcode")
     private String barcode;
