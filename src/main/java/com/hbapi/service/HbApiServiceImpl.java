@@ -80,6 +80,7 @@ public class HbApiServiceImpl implements HbApiService{
             prodInfoModel.setIngredients(ingredientsList);
             prodInfoModel.setAdditives(additivesList);
             prodInfoModel.setIsHalal(isProdHalal);
+            prodInfoModel.setImageLink(productInfoEntity.getImageLink());
 
             log.info(prodInfoModel.toString());
             return prodInfoModel;

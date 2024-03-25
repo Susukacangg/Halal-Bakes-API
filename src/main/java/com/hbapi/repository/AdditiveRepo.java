@@ -13,7 +13,7 @@ public interface AdditiveRepo extends JpaRepository<AdditiveEntity, String> {
 
     @Query(nativeQuery = true, value = """
             SELECT *
-            FROM additiveEntity
+            FROM additive
             WHERE ecode = :ecode
             """)
     Optional<AdditiveEntity> findEcodeByEcodeId(@Param("ecode") String ecode);

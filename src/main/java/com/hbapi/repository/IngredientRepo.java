@@ -13,7 +13,7 @@ public interface IngredientRepo extends JpaRepository<IngredientEntity, Integer>
 
     @Query(nativeQuery = true, value = """
             SELECT *
-            FROM ingredientEntity
+            FROM ingredient
             WHERE ingredient_id = :ingredientId
             """)
     Optional<IngredientEntity> findIngredientByIngredientId(@Param("ingredientId") Integer ingredientId);

@@ -158,6 +158,8 @@ components:
           type: string
         manuLocation:
           type: string
+        imageLink:
+          type: string
     ProdInfoIngredientModel:
       type: object
       properties:
